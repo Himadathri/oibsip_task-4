@@ -1,0 +1,164 @@
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
+
+class Main {
+    private final Map<String, Integer> userCredentials;
+    private final Scanner scanner;
+
+    public Main() {
+        userCredentials = new HashMap<>();
+        // Add more user names with passwords
+        userCredentials.put("Gauri", 105);
+        userCredentials.put("John", 123);
+        userCredentials.put("Emma", 456);
+
+        scanner = new Scanner(System.in);
+    }
+
+    public void login() {
+        System.out.println("\n********** Welcome to ONLINE EXAM SYSTEM **********\n");
+
+        // Autocomplete for User-ID
+        System.out.print("Enter User-Id: ");
+        String userID = autoCompleteUser(scanner.nextLine().trim());
+        System.out.println("Enter Password: ");
+        int password = scanner.nextInt();
+
+        if (userCredentials.containsKey(userID) && userCredentials.get(userID) == password) {
+            System.out.println("Log-In Successful!");
+            mainMenu();
+        } else {
+            System.out.println("Invalid!! Please Check...");
+            login();
+        }
+    }
+
+    // Autocomplete for User-ID
+    private String autoCompleteUser(String input) {
+        for (String username : userCredentials.keySet()) {
+            if (username.toLowerCase().startsWith(input.toLowerCase())) {
+                return username;
+            }
+        }
+        return input; // Return original input if no match
+    }
+
+    public void mainMenu() {
+        System.out.println("\n1. Update\n2. Start test\n3. Logout");
+        System.out.println("Enter your choice: ");
+        int choice = scanner.nextInt();
+
+        switch (choice) {
+            case 1:
+                updateProfile();
+                mainMenu();
+                break;
+            case 2:
+                startTest();
+                mainMenu();
+                break;
+            case 3:
+                System.exit(0);
+                break;
+            default:
+                System.out.println("Invalid Choice!");
+        }
+    }
+
+    public void updateProfile() {
+        System.out.println("\n----- Update -----");
+        System.out.println("Enter Username: ");
+        scanner.nextLine(); // Consume the newline character
+        String id = scanner.nextLine();
+
+        if (userCredentials.containsKey(id)) {
+            System.out.println("Enter New Password: ");
+            int newPassword = scanner.nextInt();
+            userCredentials.replace(id, newPassword);
+            System.out.println("Profile Update Success!");
+        } else {
+            System.out.println("User does not exist...");
+            System.out.println("Profile Update Failed!");
+        }
+    }
+
+    public void startTest() {
+        int testDurationSeconds = 30;
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                System.out.println("\n***** Time's Up! *****");
+                mainMenu();
+            }
+        }, testDurationSeconds * 1000);
+
+        int score = 0;
+        int c = 0, w = 0;
+        char ans;
+
+        System.out.println("\n***** Starting The Test *****");
+
+        // Question 1
+        System.out.println("1. What is the capital of France?");
+        System.out.println("a) Paris");
+        System.out.println("b) Berlin");
+        System.out.println("c) Madrid");
+        System.out.print("Your answer: ");
+        ans = scanner.next().charAt(0);
+        if (ans == 'a' || ans == 'A') {
+            System.out.println("Correct!");
+            c++;
+        } else {
+            System.out.println("Wrong!");
+            w++;
+        }
+
+        // Question 2
+        System.out.println("2. Which planet is known as the Red Planet?");
+        System.out.println("a) Venus");
+        System.out.println("b) Mars");
+        System.out.println("c) Jupiter");
+        System.out.print("Your answer: ");
+        ans = scanner.next().charAt(0);
+        if (ans == 'b' || ans == 'B') {
+            System.out.println("Correct!");
+            c++;
+        } else {
+            System.out.println("Wrong!");
+            w++;
+        }
+
+        // Question 3
+        System.out.println("3. Who wrote 'Romeo and Juliet'?");
+        System.out.println("a) Charles Dickens");
+        System.out.println("b) William Shakespeare");
+        System.out.println("c) Jane Austen");
+        System.out.print("Your answer: ");
+        ans = scanner.next().charAt(0);
+        if (ans == 'b' || ans == 'B') {
+            System.out.println("Correct!");
+            c++;
+        } else {
+            System.out.println("Wrong!");
+            w++;
+        }
+
+        // Add more questions as needed
+
+        timer.cancel(); // Stop the timer when the test is completed
+
+        System.out.println("Test Completed!");
+        score = (c * 1); // Modify scoring logic
+        System.out.println("Number of correct answers: " + c);
+        System.out.println("Congratulations!! Your score is " + score + ".");
+    }
+
+    public static void main(String args[]) {
+        Main exam = new Main();
+        exam.login();
+    }
+}
